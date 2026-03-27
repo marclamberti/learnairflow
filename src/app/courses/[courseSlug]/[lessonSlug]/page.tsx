@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllLessonParams, getCourse, getLesson } from "@/lib/content";
 import { LessonLayout } from "@/components/lesson/lesson-layout";
-import { LessonNav } from "@/components/lesson/lesson-nav";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -40,7 +39,6 @@ export default async function LessonPage({
   if (!course || !lesson) notFound();
 
   const lessonIndex = course.lessons.findIndex((l) => l.slug === lessonSlug);
-  const prevLesson = lessonIndex > 0 ? course.lessons[lessonIndex - 1] : null;
   const nextLesson =
     lessonIndex < course.lessons.length - 1
       ? course.lessons[lessonIndex + 1]
@@ -80,11 +78,6 @@ export default async function LessonPage({
         solutionCode={lesson.solutionCode}
         mockOutput={lesson.mockOutput}
         hints={lesson.hints}
-      />
-
-      <LessonNav
-        courseSlug={courseSlug}
-        prevLesson={prevLesson}
         nextLesson={nextLesson}
       />
     </div>

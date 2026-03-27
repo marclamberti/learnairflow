@@ -41,15 +41,15 @@ export default async function CourseOverviewPage({
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
       <div className="mb-10 flex flex-col gap-3">
-        <Badge variant="secondary" className="w-fit">
+        <Badge variant="secondary" className="w-fit bg-accent text-primary">
           {course.difficulty}
         </Badge>
-        <h1 className="text-3xl font-bold tracking-tight">{course.title}</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-primary">{course.title}</h1>
         <p className="text-lg text-muted-foreground">{course.description}</p>
       </div>
 
       <div className="mb-8">
-        <h2 className="mb-2 text-xl font-semibold">
+        <h2 className="mb-2 text-xl font-bold">
           Lessons ({course.lessons.length})
         </h2>
         <div className="mb-4">
@@ -65,16 +65,16 @@ export default async function CourseOverviewPage({
               href={`/courses/${course.slug}/${lesson.slug}`}
               className="group/lesson"
             >
-              <Card className="transition-shadow group-hover/lesson:shadow-md">
+              <Card className="transition-all group-hover/lesson:-translate-y-0.5 group-hover/lesson:shadow-md">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <span className="text-muted-foreground">
-                      {index + 1}.{" "}
+                  <CardTitle className="flex items-center gap-3">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
+                      {index + 1}
                     </span>
                     {lesson.title}
                     <LessonCheck courseSlug={course.slug} lessonSlug={lesson.slug} />
                   </CardTitle>
-                  <CardDescription>{lesson.description}</CardDescription>
+                  <CardDescription className="pl-11">{lesson.description}</CardDescription>
                 </CardHeader>
               </Card>
             </Link>

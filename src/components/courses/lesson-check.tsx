@@ -15,5 +15,5 @@ export function LessonCheck({ courseSlug, lessonSlug }: LessonCheckProps) {
 
   if (!isCompleted) return null;
 
-  return <CheckCircle2Icon className="size-4 text-primary" />;
+  return <CheckCircle2Icon className="size-4 text-emerald-500" />;
 }

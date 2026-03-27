@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import {
   ResizablePanelGroup,
@@ -10,7 +10,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ContentPanel } from "./content-panel";
 import { OutputPanel } from "./output-panel";
-import { RunButton } from "./run-button";
+import { LessonNav } from "./lesson-nav";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -35,6 +35,7 @@ interface LessonLayoutProps {
   solutionCode: string;
   mockOutput: string;
   hints?: string[];
+  nextLesson: { slug: string; title: string } | null;
 }
 
 export function LessonLayout({
@@ -45,6 +46,7 @@ export function LessonLayout({
   solutionCode,
   mockOutput,
   hints,
+  nextLesson,
 }: LessonLayoutProps) {
   const [code, setCode] = useState(starterCode);
   const [output, setOutput] = useState<string | null>(null);
@@ -81,16 +83,26 @@ export function LessonLayout({
     setHintsShown((prev) => prev + 1);
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        if (!isRunning) handleRun();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleRun, isRunning]);
+
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const toolbar = (
-    <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-terminal-border bg-terminal px-3 py-1.5">
-      <RunButton isRunning={isRunning} onClick={handleRun} />
-      <Button variant="ghost" size="sm" onClick={handleReset}>
+    <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-terminal-border bg-[#0B1D3D] px-3 py-1.5">
+      <Button variant="ghost" size="sm" onClick={handleReset} className="text-terminal-foreground/80 hover:bg-terminal-border/50 hover:text-terminal-foreground">
         <RotateCcwIcon data-icon="inline-start" />
         Reset
       </Button>
-      <Button variant="ghost" size="sm" onClick={handleToggleSolution}>
+      <Button variant="ghost" size="sm" onClick={handleToggleSolution} className="text-terminal-foreground/80 hover:bg-terminal-border/50 hover:text-terminal-foreground">
         {showSolution ? (
           <EyeOffIcon data-icon="inline-start" />
         ) : (
@@ -99,7 +111,7 @@ export function LessonLayout({
         {showSolution ? "Hide Solution" : "Show Solution"}
       </Button>
       {hints && hints.length > 0 && hintsShown < hints.length && (
-        <Button variant="ghost" size="sm" onClick={handleShowHint}>
+        <Button variant="ghost" size="sm" onClick={handleShowHint} className="text-terminal-foreground/80 hover:bg-terminal-border/50 hover:text-terminal-foreground">
           <LightbulbIcon data-icon="inline-start" />
           Hint ({hintsShown}/{hints.length})
         </Button>
@@ -108,13 +120,17 @@ export function LessonLayout({
   );
 
   const hintsBlock = hints && hintsShown > 0 && (
-    <div className="border-b border-terminal-border bg-terminal px-3 py-2">
+    <div className="border-b border-terminal-border bg-[#0B1D3D] px-3 py-2">
       {hints.slice(0, hintsShown).map((hint, i) => (
         <p key={i} className="text-xs text-terminal-foreground">
           <span className="text-terminal-warning">Hint {i + 1}:</span> {hint}
         </p>
       ))}
     </div>
+  );
+
+  const navFooter = (
+    <LessonNav courseSlug={courseSlug} nextLesson={nextLesson} />
   );
 
   if (!isDesktop) {
@@ -127,7 +143,7 @@ export function LessonLayout({
             <TabsTrigger value="output">Output</TabsTrigger>
           </TabsList>
           <TabsContent value="instructions" className="flex-1 overflow-hidden">
-            <ContentPanel markdown={instructions} />
+            <ContentPanel markdown={instructions} footer={navFooter} />
           </TabsContent>
           <TabsContent value="editor" className="flex-1 overflow-hidden">
             <div className="flex size-full flex-col">
@@ -139,7 +155,7 @@ export function LessonLayout({
             </div>
           </TabsContent>
           <TabsContent value="output" className="flex-1 overflow-hidden">
-            <OutputPanel output={output} isRunning={isRunning} />
+            <OutputPanel output={output} isRunning={isRunning} onRun={handleRun} />
           </TabsContent>
         </Tabs>
       </div>
@@ -150,29 +166,31 @@ export function LessonLayout({
     <div className="flex h-[calc(100vh-7rem)] flex-col">
       <ResizablePanelGroup orientation="horizontal">
         <ResizablePanel defaultSize={40} minSize={25}>
-          <ContentPanel markdown={instructions} />
+          <ContentPanel markdown={instructions} footer={navFooter} />
         </ResizablePanel>
 
         <ResizableHandle withHandle />
 
         <ResizablePanel defaultSize={60} minSize={30}>
-          <ResizablePanelGroup orientation="vertical">
-            <ResizablePanel defaultSize={65} minSize={20}>
-              <div className="flex size-full flex-col">
-                {toolbar}
-                {hintsBlock}
-                <div className="flex-1">
-                  <CodeEditor value={code} onChange={setCode} />
+          <div className="flex size-full flex-col overflow-hidden rounded-r-lg">
+            <ResizablePanelGroup orientation="vertical">
+              <ResizablePanel defaultSize={65} minSize={20}>
+                <div className="flex size-full flex-col">
+                  {toolbar}
+                  {hintsBlock}
+                  <div className="flex-1">
+                    <CodeEditor value={code} onChange={setCode} />
+                  </div>
                 </div>
-              </div>
-            </ResizablePanel>
+              </ResizablePanel>
 
-            <ResizableHandle />
+              <ResizableHandle />
 
-            <ResizablePanel defaultSize={35} minSize={10}>
-              <OutputPanel output={output} isRunning={isRunning} />
-            </ResizablePanel>
-          </ResizablePanelGroup>
+              <ResizablePanel defaultSize={35} minSize={10}>
+                <OutputPanel output={output} isRunning={isRunning} onRun={handleRun} />
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </div>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

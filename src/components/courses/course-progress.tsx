@@ -22,7 +22,7 @@ export function CourseProgress({ courseSlug, lessonSlugs }: CourseProgressProps)
   return (
     <div className="flex items-center gap-2">
       <Progress value={percent} className="h-1.5 flex-1" />
-      <span className="text-xs text-muted-foreground">
+      <span className="text-xs font-bold text-primary">
         {completed}/{total}
       </span>
     </div>

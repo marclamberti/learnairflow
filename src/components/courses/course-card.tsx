@@ -19,7 +19,7 @@ const DIFFICULTY_VARIANT = {
 export function CourseCard({ course }: { course: Course }) {
   return (
     <Link href={`/courses/${course.slug}`} className="group/link">
-      <Card className="transition-shadow group-hover/link:shadow-md">
+      <Card className="transition-all group-hover/link:-translate-y-1 group-hover/link:shadow-lg">
         <CardHeader>
           <CardTitle>{course.title}</CardTitle>
           <CardDescription>{course.description}</CardDescription>
