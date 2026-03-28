@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AnimatedCode } from "./animated-code";
+import { MascotWaving } from "@/components/mascot";
 
 export function Hero() {
   return (
@@ -34,11 +35,20 @@ export function Hero() {
               I already have an account
             </Link>
           </div>
+
+          {/* Mascot — mobile only */}
+          <div className="animate-hero-scale-in flex justify-center lg:hidden" style={{ animationDelay: "300ms" }}>
+            <MascotWaving className="h-48 w-auto animate-float" />
+          </div>
         </div>
 
-        {/* Right — animated code editor */}
-        <div className="animate-hero-scale-in hidden min-w-0 flex-1 lg:block" style={{ animationDelay: "300ms" }}>
+        {/* Right — animated code editor + mascot */}
+        <div className="animate-hero-scale-in relative hidden min-w-0 flex-1 lg:block" style={{ animationDelay: "300ms" }}>
           <AnimatedCode />
+          {/* Mascot floating near code editor */}
+          <div className="absolute -left-16 -bottom-4 animate-float" style={{ animationDelay: "500ms" }}>
+            <MascotWaving className="h-28 w-auto" />
+          </div>
         </div>
       </div>
     </section>

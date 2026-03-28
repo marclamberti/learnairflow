@@ -1,18 +1,17 @@
+import type { ComponentType } from "react";
 import {
-  CodeIcon,
-  BookOpenIcon,
-  PlayIcon,
-  TrophyIcon,
-  type LucideIcon,
-} from "lucide-react";
+  MascotCoding,
+  MascotReading,
+  MascotRunningDag,
+  MascotCelebrating,
+} from "@/components/mascot";
+import type { MascotProps } from "@/components/mascot/mascot-base";
 
 interface Feature {
   title: string;
   description: string;
-  icon: LucideIcon;
+  mascot: ComponentType<MascotProps>;
   bg: string;
-  iconBg: string;
-  iconColor: string;
   accentGlow: string;
 }
 
@@ -21,40 +20,32 @@ const FEATURES: Feature[] = [
     title: "Interactive lessons make learning effective",
     description:
       "Write real Airflow DAGs with instant feedback. Our code editor guides you step by step — no setup, no boilerplate.",
-    icon: CodeIcon,
+    mascot: MascotCoding,
     bg: "bg-[#1C4D8D]",
-    iconBg: "bg-[#4988C4]",
-    iconColor: "text-white",
     accentGlow: "bg-[#4988C4]",
   },
   {
     title: "It's backed by real-world scenarios",
     description:
       "Every lesson is built around production patterns. You'll learn dynamic tasks, branching, custom operators, and more.",
-    icon: BookOpenIcon,
+    mascot: MascotReading,
     bg: "bg-[#162F5A]",
-    iconBg: "bg-[#BDE8F5]",
-    iconColor: "text-[#0F2854]",
     accentGlow: "bg-[#BDE8F5]",
   },
   {
     title: "Run DAGs directly in your browser",
     description:
       "Execute your code and see real output instantly. Watch your pipelines come to life — no local Airflow installation needed.",
-    icon: PlayIcon,
+    mascot: MascotRunningDag,
     bg: "bg-[#1C4D8D]",
-    iconBg: "bg-[#58CC02]",
-    iconColor: "text-white",
     accentGlow: "bg-[#58CC02]",
   },
   {
     title: "Stay motivated and track your progress",
     description:
       "Pick up where you left off. Complete lessons, unlock new challenges, and watch yourself go from beginner to Airflow pro.",
-    icon: TrophyIcon,
+    mascot: MascotCelebrating,
     bg: "bg-[#162F5A]",
-    iconBg: "bg-[#FFD700]",
-    iconColor: "text-[#0F2854]",
     accentGlow: "bg-[#FFD700]",
   },
 ];
@@ -77,13 +68,9 @@ export function Features() {
               i % 2 === 1 ? "lg:flex-row-reverse" : ""
             }`}
           >
-            {/* Icon block */}
+            {/* Mascot block */}
             <div className="flex flex-shrink-0 items-center justify-center">
-              <div
-                className={`flex size-32 items-center justify-center rounded-[1.75rem] ${feature.iconBg} shadow-xl sm:size-40`}
-              >
-                <feature.icon className={`size-16 ${feature.iconColor} sm:size-20`} strokeWidth={1.5} />
-              </div>
+              <feature.mascot className="h-36 w-auto sm:h-44" />
             </div>
 
             {/* Text */}
