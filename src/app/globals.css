@@ -176,54 +176,21 @@
   animation: glow-pulse 3s ease-in-out infinite;
 }
 
-/* ── Mascot animations ── */
-@keyframes propeller-spin {
-  to { transform: rotate(360deg); }
+/* ── Map animations ── */
+@keyframes dash {
+  to { stroke-dashoffset: -2002; }
 }
-@keyframes wave {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-12deg); }
-  75% { transform: rotate(12deg); }
+@keyframes map-pulse {
+  0%, 100% { r: 3; opacity: 0.5; }
+  50% { r: 6; opacity: 0; }
 }
-@keyframes blink {
-  0%, 90%, 100% { transform: scaleY(1); }
-  95% { transform: scaleY(0.1); }
-}
-@keyframes antenna-glow {
-  0%, 100% { filter: drop-shadow(0 0 4px #58CC02); opacity: 0.45; }
-  50% { filter: drop-shadow(0 0 12px #58CC02); opacity: 0.7; }
-}
-@keyframes celebrate-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-.animate-propeller {
-  animation: propeller-spin 2.5s linear infinite;
-}
-.animate-propeller-fast {
-  animation: propeller-spin 0.6s linear infinite;
-}
-.animate-wave {
-  animation: wave 1.2s ease-in-out infinite;
-}
-.animate-blink {
-  animation: blink 4s ease-in-out infinite;
-}
-.animate-antenna-glow {
-  animation: antenna-glow 2s ease-in-out infinite;
-}
-.animate-celebrate {
-  animation: celebrate-bounce 0.7s ease-in-out infinite;
+.animate-map-pulse {
+  animation: map-pulse 3s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-propeller,
-  .animate-propeller-fast,
-  .animate-wave,
-  .animate-blink,
-  .animate-antenna-glow,
-  .animate-celebrate,
-  .animate-float {
+  .animate-float,
+  .animate-map-pulse {
     animation: none;
   }
 }
