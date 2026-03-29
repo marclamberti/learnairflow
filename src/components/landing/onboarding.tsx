@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 /* ── Corner brackets (reused from world-map) ── */
@@ -44,6 +44,96 @@ function OptionCard({
   );
 }
 
+/* ── Country select ── */
+
+const COUNTRIES = [
+  "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria",
+  "Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan",
+  "Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia",
+  "Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica",
+  "Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt",
+  "El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon",
+  "Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana",
+  "Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel",
+  "Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan","Laos",
+  "Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi",
+  "Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova",
+  "Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands",
+  "New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau",
+  "Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania",
+  "Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","São Tomé and Príncipe","Saudi Arabia","Senegal",
+  "Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea",
+  "South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan",
+  "Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu",
+  "Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela",
+  "Vietnam","Yemen","Zambia","Zimbabwe",
+];
+
+function CountrySelect({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [query, setQuery] = useState(value);
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const filtered = query
+    ? COUNTRIES.filter((c) => c.toLowerCase().includes(query.toLowerCase()))
+    : COUNTRIES;
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setOpen(true);
+          if (!e.target.value) onChange("");
+        }}
+        onFocus={() => setOpen(true)}
+        placeholder="Search your country..."
+        autoFocus
+        className="h-14 w-full rounded-xl border border-[#4988C4]/30 bg-[#0F2854]/80 px-5 font-mono text-lg font-bold uppercase tracking-widest text-white placeholder:text-[#4988C4]/30 placeholder:normal-case placeholder:text-sm placeholder:tracking-normal focus:border-[#4988C4] focus:outline-none focus:ring-1 focus:ring-[#4988C4]"
+      />
+      {open && filtered.length > 0 && (
+        <ul className="absolute z-50 mt-2 max-h-48 w-full overflow-y-auto rounded-xl border border-[#4988C4]/30 bg-[#0a1e3d] py-1 shadow-[0_8px_32px_rgba(0,0,0,0.6)]">
+          {filtered.map((c) => (
+            <li key={c}>
+              <button
+                type="button"
+                onClick={() => {
+                  onChange(c);
+                  setQuery(c);
+                  setOpen(false);
+                }}
+                className={`w-full cursor-pointer px-5 py-2 text-left font-mono text-xs font-bold uppercase tracking-wider transition-colors ${
+                  value === c
+                    ? "bg-[#1C4D8D]/50 text-white"
+                    : "text-[#BDE8F5]/60 hover:bg-[#1C4D8D]/30 hover:text-white"
+                }`}
+              >
+                {c}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 /* ── Step data ── */
 
 const DIVISIONS = [
@@ -75,6 +165,7 @@ interface OnboardingProps {
 
 interface AgentProfile {
   codename: string;
+  country: string;
   division: string;
   clearance: string;
   objective: string;
@@ -85,18 +176,20 @@ export function Onboarding({ onClose }: OnboardingProps) {
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState<AgentProfile>({
     codename: "",
+    country: "",
     division: "",
     clearance: "",
     objective: "",
   });
 
-  const totalSteps = 4;
+  const totalSteps = 5;
 
   const canContinue =
     (step === 0 && profile.codename.trim().length > 0) ||
-    (step === 1 && profile.division) ||
-    (step === 2 && profile.clearance) ||
-    (step === 3 && profile.objective);
+    (step === 1 && profile.country.trim().length > 0) ||
+    (step === 2 && profile.division) ||
+    (step === 3 && profile.clearance) ||
+    (step === 4 && profile.objective);
 
   function handleContinue() {
     if (step < totalSteps - 1) {
@@ -165,7 +258,7 @@ export function Onboarding({ onClose }: OnboardingProps) {
         </div>
 
         {/* Step content */}
-        <div className="w-full animate-hero-rise" key={step}>
+        <div className="relative z-20 w-full animate-hero-rise" key={step}>
           {step === 0 && (
             <div className="flex flex-col gap-4">
               <label className="text-xs font-bold uppercase tracking-[0.2em] text-[#BDE8F5]/60">
@@ -183,6 +276,18 @@ export function Onboarding({ onClose }: OnboardingProps) {
           )}
 
           {step === 1 && (
+            <div className="flex flex-col gap-4">
+              <label className="text-xs font-bold uppercase tracking-[0.2em] text-[#BDE8F5]/60">
+                Base of operations
+              </label>
+              <CountrySelect
+                value={profile.country}
+                onChange={(v) => setProfile({ ...profile, country: v })}
+              />
+            </div>
+          )}
+
+          {step === 2 && (
             <div className="flex flex-col gap-3">
               <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#BDE8F5]/60">
                 Select your division
@@ -199,7 +304,7 @@ export function Onboarding({ onClose }: OnboardingProps) {
             </div>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <div className="flex flex-col gap-3">
               <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#BDE8F5]/60">
                 What is your clearance level?
@@ -216,7 +321,7 @@ export function Onboarding({ onClose }: OnboardingProps) {
             </div>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <div className="flex flex-col gap-3">
               <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#BDE8F5]/60">
                 Primary objective
@@ -235,7 +340,7 @@ export function Onboarding({ onClose }: OnboardingProps) {
         </div>
 
         {/* Summary preview (on last step, after selection) */}
-        {step === 3 && profile.objective && (
+        {step === 4 && profile.objective && (
           <div className="w-full rounded-xl border border-[#4988C4]/20 bg-[#0F2854]/60 p-5">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#4988C4]/50">
               Agent Summary
@@ -243,6 +348,8 @@ export function Onboarding({ onClose }: OnboardingProps) {
             <div className="mt-3 grid grid-cols-2 gap-y-2 gap-x-4 text-xs">
               <span className="text-[#BDE8F5]/40">Codename</span>
               <span className="font-mono font-bold uppercase text-white">{profile.codename}</span>
+              <span className="text-[#BDE8F5]/40">Base</span>
+              <span className="font-mono font-bold uppercase text-white">{profile.country}</span>
               <span className="text-[#BDE8F5]/40">Division</span>
               <span className="font-bold text-white">{divisionLabel}</span>
               <span className="text-[#BDE8F5]/40">Clearance</span>
@@ -254,7 +361,7 @@ export function Onboarding({ onClose }: OnboardingProps) {
         )}
 
         {/* Actions */}
-        <div className="flex w-full items-center justify-between">
+        <div className="relative z-10 flex w-full items-center justify-between">
           <button
             type="button"
             onClick={step === 0 ? onClose : () => setStep((s) => s - 1)}
