@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useState, useEffect } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -73,7 +73,34 @@ function StatusDot({ color, label }: { color: string; label: string }) {
   );
 }
 
-export function WorldMap() {
+function Typewriter({ text, delay = 1000, speed = 60 }: { text: string; delay?: number; speed?: number }) {
+  const [count, setCount] = useState(0);
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setStarted(true), delay);
+    return () => clearTimeout(timeout);
+  }, [delay]);
+
+  useEffect(() => {
+    if (!started || count >= text.length) return;
+    const timer = setTimeout(() => setCount((c) => c + 1), speed);
+    return () => clearTimeout(timer);
+  }, [started, count, text.length, speed]);
+
+  return (
+    <span>
+      {text.slice(0, count)}
+      <span className={count < text.length ? "animate-cursor-blink" : "opacity-0"}>_</span>
+    </span>
+  );
+}
+
+interface WorldMapProps {
+  onBeginMission: () => void;
+}
+
+export function WorldMap({ onBeginMission }: WorldMapProps) {
   return (
     <div className="relative h-[calc(100vh-3.5rem)] w-full overflow-hidden bg-[#0F2854]">
       <ComposableMap
@@ -200,15 +227,16 @@ export function WorldMap() {
           <p className="text-center text-base font-extrabold uppercase tracking-[0.25em] text-[#BDE8F5] sm:text-lg"
             style={{ textShadow: "0 0 20px rgba(189,232,245,0.4)" }}
           >
-            Your mission: master Apache Airflow
+            <Typewriter text="Your mission: orchestrate the world's data" />
           </p>
-          <Link
-            href="/courses"
-            className="inline-flex h-14 items-center justify-center gap-3 rounded-2xl border border-[#4988C4]/30 bg-[#0F2854]/80 px-10 text-sm font-extrabold uppercase tracking-[0.2em] text-white backdrop-blur transition-all duration-200 hover:border-[#4988C4] hover:bg-[#1C4D8D]/60 hover:shadow-[0_0_30px_rgba(73,136,196,0.3)]"
+          <button
+            type="button"
+            onClick={onBeginMission}
+            className="inline-flex h-14 cursor-pointer items-center justify-center gap-3 rounded-2xl border border-[#4988C4]/30 bg-[#0F2854]/80 px-10 text-sm font-extrabold uppercase tracking-[0.2em] text-white backdrop-blur transition-all duration-200 hover:border-[#4988C4] hover:bg-[#1C4D8D]/60 hover:shadow-[0_0_30px_rgba(73,136,196,0.3)]"
           >
             <span className="text-lg">&#9654;</span>
             Begin Mission
-          </Link>
+          </button>
         </div>
 
         {/* Bottom-right: classification badge */}
