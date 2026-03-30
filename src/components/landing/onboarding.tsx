@@ -38,7 +38,7 @@ function OptionCard({
       }`}
     >
       <span className="text-sm font-bold uppercase tracking-wider text-white">{label}</span>
-      <span className="text-xs leading-relaxed text-[#BDE8F5]/50">{description}</span>
+      <span className="text-sm leading-relaxed text-[#BDE8F5]/50">{description}</span>
     </button>
   );
 }
@@ -117,7 +117,7 @@ function CountrySelect({
                   setQuery(c);
                   setOpen(false);
                 }}
-                className={`w-full cursor-pointer px-5 py-2 text-left font-mono text-xs font-bold uppercase tracking-wider transition-colors ${
+                className={`w-full cursor-pointer px-5 py-2 text-left font-mono text-sm font-bold uppercase tracking-wider transition-colors ${
                   value === c
                     ? "bg-[#1C4D8D]/50 text-white"
                     : "text-[#BDE8F5]/60 hover:bg-[#1C4D8D]/30 hover:text-white"
@@ -230,7 +230,7 @@ export function Onboarding({ onClose, onComplete }: OnboardingProps) {
           </span>
           <div className="h-px w-24 bg-gradient-to-r from-transparent via-[#4988C4]/40 to-transparent" />
           <h2
-            className="text-2xl font-extrabold uppercase tracking-wider text-white sm:text-3xl"
+            className="text-3xl font-extrabold uppercase tracking-wider text-white sm:text-4xl"
             style={{ textShadow: "0 0 30px rgba(73,136,196,0.4)" }}
           >
             Agent Dossier
@@ -344,7 +344,7 @@ export function Onboarding({ onClose, onComplete }: OnboardingProps) {
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#4988C4]/50">
               Agent Summary
             </span>
-            <div className="mt-3 grid grid-cols-2 gap-y-2 gap-x-4 text-xs">
+            <div className="mt-3 grid grid-cols-2 gap-y-2 gap-x-4 text-sm">
               <span className="text-[#BDE8F5]/40">Codename</span>
               <span className="font-mono font-bold uppercase text-white">{profile.codename}</span>
               <span className="text-[#BDE8F5]/40">Base</span>
@@ -364,7 +364,7 @@ export function Onboarding({ onClose, onComplete }: OnboardingProps) {
           <button
             type="button"
             onClick={step === 0 ? onClose : () => setStep((s) => s - 1)}
-            className="cursor-pointer text-xs font-semibold uppercase tracking-[0.15em] text-[#4988C4]/60 transition-colors hover:text-[#4988C4]"
+            className="cursor-pointer text-xs font-semibold uppercase tracking-[0.2em] text-[#4988C4]/60 transition-colors hover:text-[#4988C4]"
           >
             {step === 0 ? "Abort" : "Back"}
           </button>

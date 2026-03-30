@@ -22,7 +22,7 @@ function Commander({ speaking }: { speaking?: boolean }) {
     <div className="flex flex-col items-center gap-2">
       {/* Comm frame */}
       <div
-        className={`relative flex h-20 w-20 items-center justify-center rounded-full border-2 ${
+        className={`relative flex h-24 w-24 items-center justify-center rounded-full border-2 ${
           speaking
             ? "border-[#4988C4] shadow-[0_0_20px_rgba(73,136,196,0.4)]"
             : "border-[#4988C4]/40"
@@ -33,7 +33,7 @@ function Commander({ speaking }: { speaking?: boolean }) {
           <div className="absolute inset-0 animate-ping rounded-full border border-[#4988C4]/30" />
         )}
         {/* Face SVG */}
-        <svg viewBox="0 0 48 48" className="h-14 w-14" shapeRendering="auto">
+        <svg viewBox="0 0 48 48" className="h-16 w-16" shapeRendering="auto">
           {/* Head */}
           <circle cx={24} cy={22} r={14} fill="#4988C4" />
           {/* Visor / face area */}
@@ -60,7 +60,7 @@ function Commander({ speaking }: { speaking?: boolean }) {
           <circle cx={24} cy={3} r={2} fill="#58CC02" className="animate-antenna-glow" />
         </svg>
       </div>
-      <span className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#4988C4]/60">
+      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#4988C4]/60">
         Cmdr. Flow
       </span>
     </div>
@@ -70,10 +70,10 @@ function Commander({ speaking }: { speaking?: boolean }) {
 /* ── Speech bubble ── */
 function SpeechBubble({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative w-full rounded-xl border border-[#4988C4]/20 bg-[#1C4D8D]/15 px-5 py-4">
+    <div className="relative w-full rounded-xl border border-[#4988C4]/20 bg-[#1C4D8D]/15 px-6 py-5">
       {/* Arrow pointing up to commander */}
       <div className="absolute -top-2 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-l border-t border-[#4988C4]/20 bg-[#1C4D8D]/15" />
-      <p className="text-sm italic leading-relaxed text-[#BDE8F5]/70">{children}</p>
+      <p className="text-base italic leading-relaxed text-[#BDE8F5]/70">{children}</p>
     </div>
   );
 }
@@ -105,7 +105,7 @@ const QUESTIONS: Question[] = [
     options: [
       "The order they appear in the Python file",
       "Alphabetical sorting by task ID",
-      "Dependencies set with >> or set_downstream()",
+      "Dependencies set with bitshift operators or chain helpers",
       "The schedule interval configuration",
     ],
     correct: 2,
@@ -115,11 +115,11 @@ const QUESTIONS: Question[] = [
     question: "Which Airflow component is responsible for actually running your tasks?",
     options: [
       "The Scheduler",
-      "The Webserver",
+      "The Workers",
       "The Executor",
       "The Metadata Database",
     ],
-    correct: 2,
+    correct: 1,
   },
   {
     scenario: "Situation report: a critical pipeline fails at 0300. The on-call team is alerted.",
@@ -217,7 +217,7 @@ export function Assessment() {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex w-full max-w-lg flex-col items-center gap-6 px-6">
+      <div className="relative z-10 flex w-full max-w-2xl flex-col items-center gap-8 px-6">
         {/* ── Briefing ── */}
         {phase === "briefing" && (
           <div className="flex flex-col items-center gap-6 animate-hero-rise">
@@ -242,7 +242,7 @@ export function Assessment() {
 
         {/* ── Questions ── */}
         {phase === "questions" && (
-          <div className="flex w-full flex-col gap-5 animate-hero-rise" key={current}>
+          <div className="flex w-full flex-col gap-6 animate-hero-rise" key={current}>
             {/* Commander + scenario */}
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0">
@@ -263,14 +263,14 @@ export function Assessment() {
                       }`}
                     />
                   ))}
-                  <span className="ml-1 font-mono text-[9px] uppercase tracking-widest text-[#4988C4]/50">
+                  <span className="ml-2 font-mono text-[10px] uppercase tracking-widest text-[#4988C4]/50">
                     {current + 1}/{QUESTIONS.length}
                   </span>
                 </div>
 
                 {/* Scenario as dialogue */}
-                <div className="rounded-lg border border-[#4988C4]/15 bg-[#1C4D8D]/15 px-4 py-3">
-                  <p className="text-sm italic leading-relaxed text-[#BDE8F5]/70">
+                <div className="rounded-lg border border-[#4988C4]/15 bg-[#1C4D8D]/15 px-5 py-4">
+                  <p className="text-base italic leading-relaxed text-[#BDE8F5]/70">
                     &ldquo;{QUESTIONS[current].scenario}&rdquo;
                   </p>
                 </div>
@@ -278,7 +278,7 @@ export function Assessment() {
             </div>
 
             {/* Question */}
-            <h3 className="text-base font-bold leading-snug text-white sm:text-lg">
+            <h3 className="text-lg font-bold leading-snug text-white sm:text-xl">
               {QUESTIONS[current].question}
             </h3>
 
@@ -304,7 +304,7 @@ export function Assessment() {
                   >
                     {String.fromCharCode(65 + i)}
                   </span>
-                  <span className="text-sm text-[#BDE8F5]/80">{option}</span>
+                  <span className="text-base text-[#BDE8F5]/80">{option}</span>
                 </button>
               ))}
             </div>
@@ -332,7 +332,7 @@ export function Assessment() {
 
             {/* Rank reveal */}
             <div className="flex flex-col items-center gap-2">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4988C4]/60">
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4988C4]/60">
                 Evaluated Rank
               </span>
               <h2
@@ -344,11 +344,11 @@ export function Assessment() {
             </div>
 
             {/* Score card */}
-            <div className="w-full rounded-xl border border-[#4988C4]/20 bg-[#0F2854]/60 p-5">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#4988C4]/50">
+            <div className="w-full rounded-xl border border-[#4988C4]/20 bg-[#0F2854]/60 p-6">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#4988C4]/50">
                 Assessment Report
               </span>
-              <div className="mt-3 grid grid-cols-2 gap-y-2 gap-x-4 text-xs">
+              <div className="mt-4 grid grid-cols-2 gap-y-3 gap-x-4 text-sm">
                 <span className="text-[#BDE8F5]/40">Score</span>
                 <span className="font-mono font-bold text-white">
                   {score} / {QUESTIONS.length}
