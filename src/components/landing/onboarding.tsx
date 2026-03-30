@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 /* ── Corner brackets (reused from world-map) ── */
 function CornerBrackets() {
@@ -161,6 +160,7 @@ const OBJECTIVES = [
 
 interface OnboardingProps {
   onClose: () => void;
+  onComplete: () => void;
 }
 
 interface AgentProfile {
@@ -171,8 +171,7 @@ interface AgentProfile {
   objective: string;
 }
 
-export function Onboarding({ onClose }: OnboardingProps) {
-  const router = useRouter();
+export function Onboarding({ onClose, onComplete }: OnboardingProps) {
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState<AgentProfile>({
     codename: "",
@@ -195,7 +194,7 @@ export function Onboarding({ onClose }: OnboardingProps) {
     if (step < totalSteps - 1) {
       setStep((s) => s + 1);
     } else {
-      router.push("/courses");
+      onComplete();
     }
   }
 
@@ -379,7 +378,7 @@ export function Onboarding({ onClose }: OnboardingProps) {
             {step === totalSteps - 1 ? (
               <>
                 <span className="text-lg">&#9654;</span>
-                Launch Mission
+                Begin Training
               </>
             ) : (
               "Continue"
