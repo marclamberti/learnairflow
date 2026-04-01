@@ -88,6 +88,7 @@ interface Question {
 }
 
 const QUESTIONS: Question[] = [
+  // Level 1 — Absolute beginner
   {
     scenario: "Let's start with the basics, agent. Every operative needs to know the fundamentals.",
     question: "What is a DAG in Apache Airflow?",
@@ -99,6 +100,7 @@ const QUESTIONS: Question[] = [
     ],
     correct: 1,
   },
+  // Level 2 — Beginner concept
   {
     scenario: "Good. Now imagine you're designing your first pipeline. Tasks must run in a specific order.",
     question: "What defines the execution order of tasks in Airflow?",
@@ -110,8 +112,9 @@ const QUESTIONS: Question[] = [
     ],
     correct: 2,
   },
+  // Level 3 — Intermediate architecture
   {
-    scenario: "HQ needs to scale operations. Pipeline execution must be distributed across multiple machines.",
+    scenario: "HQ needs to scale operations. You must understand how Airflow distributes work under the hood.",
     question: "Which Airflow component is responsible for actually running your tasks?",
     options: [
       "The Scheduler",
@@ -121,25 +124,27 @@ const QUESTIONS: Question[] = [
     ],
     correct: 1,
   },
+  // Level 4 — Advanced operational knowledge
   {
-    scenario: "Situation report: a critical pipeline fails at 0300. The on-call team is alerted.",
-    question: "What Airflow feature handles automatic retries on task failure?",
+    scenario: "A pipeline has a task that should only run when at least one upstream task has failed. You need precise control.",
+    question: "Which parameter controls whether a task runs based on the state of its upstream tasks?",
     options: [
-      "The DAG schedule interval",
-      "The retries and retry_delay task parameters",
-      "The Airflow webserver health check",
-      "The trigger_rule configuration",
+      "depends_on_past",
+      "wait_for_downstream",
+      "trigger_rule",
+      "execution_timeout",
     ],
-    correct: 1,
+    correct: 2,
   },
+  // Level 5 — Expert-level concept
   {
-    scenario: "Final scenario. Your pipeline needs to pass a computed value from one task to the next.",
-    question: "How do you share data between tasks in Airflow?",
+    scenario: "Final scenario. A DAG needs to generate a dynamic number of tasks at runtime based on an API response.",
+    question: "What Airflow feature allows you to create tasks dynamically at runtime?",
     options: [
-      "Global Python variables",
-      "Writing to a shared log file",
-      "XCom (cross-communication)",
-      "Environment variables set at runtime",
+      "Manually duplicating tasks in a loop",
+      "Task Groups",
+      "Dynamic Task Mapping",
+      "BranchPythonOperator",
     ],
     correct: 2,
   },
